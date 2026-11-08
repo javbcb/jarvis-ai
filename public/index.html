@@ -104,18 +104,14 @@ async function send() {
 try {
   const response = await fetch("/api/chat", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      message: text
-    })
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({message: text})
   });
 
   const data = await response.json();
 
   if (!response.ok) {
-    throw new Error(data.error || "Connection failed");
+    throw new Error(data.error || "Connection error");
   }
 
   const reply = data.reply;
@@ -125,8 +121,6 @@ try {
 
   const cleanReply = reply
     .replace(/[*_`#\[\]{}>|~]/g, "")
-    .replace(/^\s*[-+]\s+/gm, "")
-    .replace(/^\s*\d+[.)]\s+/gm, "")
     .replace(/\s+/g, " ")
     .trim();
 
@@ -136,7 +130,6 @@ try {
   speechSynthesis.cancel();
   speechSynthesis.speak(speech);
 
-} catch (error) {
 
     speechSynthesis.speak(speech);
 
