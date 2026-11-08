@@ -164,6 +164,63 @@ function listen() {
 
   if (!Recognition) {
     alert("Voice recognition is not supported.");
+<script>
+async function send() {
+  const box = document.getElementById("message");
+  const chat = document.getElementById("chat");
+  const text = box.value.trim();
+
+  if (!text) return;
+
+  chat.innerHTML += `<div class="message">YOU: ${escapeHTML(text)}</div>`;
+  box.value = "";
+
+  try {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: text })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Connection failed");
+    }
+
+    const reply = data.reply;
+
+    chat.innerHTML += `<div class="message">JARVIS: ${escapeHTML(reply)}</div>`;
+
+    const cleanReply = reply
+      .replace(/[*_`#\[\]{}>|~]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    const speech = new SpeechSynthesisUtterance(cleanReply);
+    speech.lang = "en-GB";
+    speechSynthesis.cancel();
+    speechSynthesis.speak(speech);
+
+  } catch (error) {
+    console.error("JARVIS:", error);
+    chat.innerHTML += `<div class="message">JARVIS: ${escapeHTML(error.message)}</div>`;
+  }
+
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function escapeHTML(text) {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function listen() {
+  const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!Recognition) {
+    alert("Voice recognition is not supported.");
     return;
   }
 
@@ -171,9 +228,7 @@ function listen() {
   recognition.lang = "en-GB";
 
   recognition.onresult = event => {
-    document.getElementById("message").value =
-      event.results[0][0].transcript;
-
+    document.getElementById("message").value = event.results[0][0].transcript;
     send();
   };
 
