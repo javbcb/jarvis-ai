@@ -83,11 +83,6 @@ button {
 <div class="message">JARVIS: Good evening, sir. How may I assist you?</div>
 </div>
 
-<input id="message" placeholder="Talk to JARVIS...">
-<button onclick="send()">SEND</button>
-<button onclick="listen()">🎙 TALK</button>
-
-  <script>
 async function send() {
   const box = document.getElementById("message");
   const chat = document.getElementById("chat");
@@ -100,42 +95,39 @@ async function send() {
 
   box.value = "";
 
-  
-try {
-  const response = await fetch("/api/chat", {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({message: text})
-  });
+  try {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ message: text })
+    });
 
-  const data = await response.json();
+    const data = await response.json();
 
-  if (!response.ok) {
-    throw new Error(data.error || "Connection error");
-  }
+    if (!response.ok) {
+      throw new Error(data.error || "Connection failed");
+    }
 
-  const reply = data.reply;
+    const reply = data.reply;
 
-  chat.innerHTML +=
-    `<div class="message">JARVIS: ${escapeHTML(reply)}</div>`;
+    chat.innerHTML +=
+      `<div class="message">JARVIS: ${escapeHTML(reply)}</div>`;
 
-  const cleanReply = reply
-    .replace(/[*_`#\[\]{}>|~]/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
+    const cleanReply = reply
+      .replace(/[*_`#\[\]{}>|~]/g, "")
+      .replace(/\s+/g, " ")
+      .trim();
 
-  const speech = new SpeechSynthesisUtterance(cleanReply);
-  speech.lang = "en-GB";
+    const speech = new SpeechSynthesisUtterance(cleanReply);
+    speech.lang = "en-GB";
 
-  speechSynthesis.cancel();
-  speechSynthesis.speak(speech);
-
-
+    speechSynthesis.cancel();
     speechSynthesis.speak(speech);
 
   } catch (error) {
     console.error("JARVIS:", error);
-
     chat.innerHTML +=
       `<div class="message">JARVIS: ${escapeHTML(error.message)}</div>`;
   }
