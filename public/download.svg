@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="110" fill="#050b18"></rect>
+  <circle cx="256" cy="256" r="190" fill="none" stroke="#087da5" stroke-width="12"></circle>
+  <circle cx="256" cy="256" r="145" fill="none" stroke="#00cfff" stroke-width="5"></circle>
+  <circle cx="256" cy="256" r="105" fill="#087da5" opacity=".25"></circle>
+  <circle cx="256" cy="256" r="65" fill="#00cfff" opacity=".8"></circle>
+  <circle cx="256" cy="256" r="38" fill="#ffffff"></circle>
+  <text x="256" y="445" text-anchor="middle" fill="#00cfff" font-size="38" font-family="Arial" font-weight="bold">J.A.R.V.I.S.</text>
+</svg>
