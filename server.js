@@ -11,6 +11,11 @@ app.post("/api/chat", async (req, res) => {
     const response = await fetch(
       "https://api.groq.com/openai/v1/chat/completions",
       {
+       if (!message || typeof message !== "string") {
+  return res.status(400).json({
+    error: "Sir, I didn't receive your message."
+  });
+}
         method: "POST",
         headers: {
           "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
