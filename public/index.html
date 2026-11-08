@@ -86,24 +86,19 @@ button {
 <input id="message" placeholder="Talk to JARVIS...">
 <button onclick="send()">SEND</button>
 <button onclick="listen()">🎙 TALK</button>
-<script>
+
+  <script>
 async function send() {
   const box = document.getElementById("message");
   const chat = document.getElementById("chat");
   const text = box.value.trim();
 
-  if (!text) {
-    box.focus();
-    return;
-  }
+  if (!text) return;
 
-  chat.innerHTML += `<div class="message">YOU: ${escapeHTML(text)}</div>`;
+  chat.innerHTML +=
+    `<div class="message">YOU: ${escapeHTML(text)}</div>`;
+
   box.value = "";
-
-  const loading = document.createElement("div");
-  loading.className = "message";
-  loading.textContent = "JARVIS: Processing, sir...";
-  chat.appendChild(loading);
 
   try {
     const response = await fetch("/api/chat", {
@@ -119,18 +114,21 @@ async function send() {
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.error || "Server error");
+      throw new Error(data.error || "Connection failed");
     }
 
-    loading.textContent = "JARVIS: " + data.reply;
+    chat.innerHTML +=
+      `<div class="message">JARVIS: ${escapeHTML(data.reply)}</div>`;
 
     const speech = new SpeechSynthesisUtterance(data.reply);
     speech.lang = "en-GB";
     speechSynthesis.speak(speech);
 
   } catch (error) {
-    console.error("JARVIS error:", error);
-    loading.textContent = "JARVIS: " + error.message;
+    console.error("JARVIS:", error);
+
+    chat.innerHTML +=
+      `<div class="message">JARVIS: ${escapeHTML(error.message)}</div>`;
   }
 
   chat.scrollTop = chat.scrollHeight;
@@ -148,7 +146,7 @@ function listen() {
     window.webkitSpeechRecognition;
 
   if (!Recognition) {
-    alert("Voice recognition isn't supported in this browser.");
+    alert("Voice recognition is not supported.");
     return;
   }
 
@@ -158,21 +156,12 @@ function listen() {
   recognition.onresult = event => {
     document.getElementById("message").value =
       event.results[0][0].transcript;
-    send();
-  };
 
-  recognition.onerror = event => {
-    alert("Microphone error: " + event.error);
+    send();
   };
 
   recognition.start();
 }
-
-document.getElementById("message").addEventListener("keydown", event => {
-  if (event.key === "Enter") {
-    send();
-  }
-});
 </script>
 
 </body>
