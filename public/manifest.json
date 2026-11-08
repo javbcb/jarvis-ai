@@ -8,11 +8,11 @@
   "background_color": "#050b18",
   "theme_color": "#087da5",
   "orientation": "portrait",
-  "icons": [
-    {
-      "src": "/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
-    }
-  ]
-}
+ "icons": [
+  {
+    "src": "/icon.png",
+    "sizes": "512x512",
+    "type": "image/png",
+    "purpose": "any"
+  }
+]
