@@ -101,28 +101,16 @@ async function send() {
   box.value = "";
 
   try {
-    const response = await fetch("/api/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        message: text
-      })
-    });
+  const cleanReply = data.reply
+  .replace(/\*\*/g, "")
+  .replace(/\*/g, "")
+  .replace(/[`#\[\]_]/g, "")
+  .replace(/\s+/g, " ")
+  .trim();
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || "Connection failed");
-    }
-
-    chat.innerHTML +=
-      `<div class="message">JARVIS: ${escapeHTML(data.reply)}</div>`;
-
-    const speech = new SpeechSynthesisUtterance(data.reply);
-    speech.lang = "en-GB";
-    speechSynthesis.speak(speech);
+const speech = new SpeechSynthesisUtterance(cleanReply);
+speech.lang = "en-GB";
+speechSynthesis.speak(speech);
 
   } catch (error) {
     console.error("JARVIS:", error);
