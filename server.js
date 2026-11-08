@@ -3,19 +3,19 @@ const app = express();
 
 app.use(express.json());
 app.use(express.static("public"));
-
 app.post("/api/chat", async (req, res) => {
   try {
     const { message } = req.body;
 
+    if (!message || typeof message !== "string") {
+      return res.status(400).json({
+        error: "Sir, I didn't receive your message."
+      });
+    }
+
     const response = await fetch(
       "https://api.groq.com/openai/v1/chat/completions",
       {
-       if (!message || typeof message !== "string") {
-  return res.status(400).json({
-    error: "Sir, I didn't receive your message."
-  });
-}
         method: "POST",
         headers: {
           "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
@@ -56,10 +56,4 @@ app.post("/api/chat", async (req, res) => {
       error: "JARVIS encountered a connection problem."
     });
   }
-});
-
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`JARVIS online on port ${PORT}`);
 });
