@@ -101,16 +101,42 @@ async function send() {
   box.value = "";
 
   try {
-const cleanReply = data.reply
-  .replace(/[*_`#\[\]{}>|~]/g, "")
-  .replace(/^\s*[-+]\s+/gm, "")
-  .replace(/^\s*\d+\.\s+/gm, "")
-  .replace(/\s+/g, " ")
-  .trim();
+try {
+  const response = await fetch("/api/chat", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      message: text
+    })
+  });
 
-const speech = new SpeechSynthesisUtterance(cleanReply);
-speech.lang = "en-GB";
-speechSynthesis.speak(speech);;
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error || "Connection failed");
+  }
+
+  const reply = data.reply;
+
+  chat.innerHTML +=
+    `<div class="message">JARVIS: ${escapeHTML(reply)}</div>`;
+
+  const cleanReply = reply
+    .replace(/[*_`#\[\]{}>|~]/g, "")
+    .replace(/^\s*[-+]\s+/gm, "")
+    .replace(/^\s*\d+[.)]\s+/gm, "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const speech = new SpeechSynthesisUtterance(cleanReply);
+  speech.lang = "en-GB";
+
+  speechSynthesis.cancel();
+  speechSynthesis.speak(speech);
+
+} catch (error) {
 
     speechSynthesis.speak(speech);
 
