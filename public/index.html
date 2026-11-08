@@ -101,16 +101,16 @@ async function send() {
   box.value = "";
 
   try {
-  const cleanReply = data.reply
-  .replace(/\*\*/g, "")
-  .replace(/\*/g, "")
-  .replace(/[`#\[\]_]/g, "")
+const cleanReply = data.reply
+  .replace(/[*_`#\[\]{}>|~]/g, "")
+  .replace(/^\s*[-+]\s+/gm, "")
+  .replace(/^\s*\d+\.\s+/gm, "")
   .replace(/\s+/g, " ")
   .trim();
 
 const speech = new SpeechSynthesisUtterance(cleanReply);
 speech.lang = "en-GB";
-speechSynthesis.speak(speech);
+speechSynthesis.speak(speech);;
 
     speechSynthesis.speak(speech);
 
